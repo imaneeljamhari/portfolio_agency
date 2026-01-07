@@ -1,107 +1,113 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Palette, Code, Zap, Users } from "lucide-react";
-import Card from "../ui/Card";
-
-const services = [
-  {
-    icon: Palette,
-    title: "Visual Production",
-    description: "From luxury villas to iconic restaurants, we craft visuals that captivate and inspire.",
-  },
-  {
-    icon: Code,
-    title: "Real Estate",
-    description: "We turn properties and destinations into experiences that connect with your audience.",
-  },
-  {
-    icon: Zap,
-    title: "Brand Identity",
-    description: "We design impactful stories that resonate across social media and beyond.",
-  },
-  {
-    icon: Users,
-    title: "Digital Consulting",
-    description: "From social media to advertising, we help you stand out in a competitive digital landscape.",
-  },
-];
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export default function About() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"], // Commence quand la section touche le haut de l'écran
+  });
+
+  // Animations des textes
+  const xWho = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
+  const xWe = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const xAre = useTransform(scrollYProgress, [0, 1], ["0%", "80%"]);
+
+  const whoColor = useTransform(scrollYProgress, [0, 0.7], ["#000000", "#5B9BD5"]);
+  const weColor = useTransform(scrollYProgress, [0, 0.7], ["#000000", "#D4A574"]);
+  const areColor = useTransform(scrollYProgress, [0, 0.7], ["#000000", "#FFFFFF"]);
+
+  const yText = useTransform(scrollYProgress, [0, 0.4, 1], [100, 0, -100]);
+
+  // Opacité des textes : visible seulement pendant le scroll de la section
+  const textsOpacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
+
+  // Parallax des images
+  const scaleImages = useTransform(scrollYProgress, [0, 1], [1.1, 1.25]);
+
   return (
-    <section id="about" className="section-padding bg-gradient-to-b from-[#F9F8F6] to-[#EFECE3]">
-      <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="text-sm uppercase tracking-wider text-black/60 mb-4 block">
-            About Us
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            We Create Visual
-            <span className="block text-black/80">
-              Masterpieces
-            </span>
-          </h2>
-          <p className="text-lg text-black/70 max-w-3xl mx-auto">
-           Our creative team brings your brand to life through cinematic visuals, refined storytelling, and digital strategy.
-We believe in the art of image and motion to elevate spaces, inspire audiences, and leave a lasting impression.
-          </p>
-        </motion.div>
-
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card className="p-8 h-full group cursor-pointer bg-[#F9F8F6] border-black/10">
-                <div className="w-14 h-14 rounded-lg bg-black flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <service.icon className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-black/70 text-sm leading-relaxed">
-                  {service.description}
-                </p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Stats Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-20"
-        >
-          <Card className="p-12 bg-[#F9F8F6] border-black/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { value: "12+", label: "Years Experience" },
-                { value: "98%", label: "Client Satisfaction" },
-                { value: "200+", label: "Projects Completed" },
-                { value: "24/7", label: "Support Available" },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-black mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-black/70">{stat.label}</div>
-                </div>
-              ))}
+    <section
+      id="about"
+      ref={sectionRef}
+      className="relative bg-[#EFECE3] h-[300vh]" // 3 écrans de hauteur pour le scroll
+    >
+      {/* Images en fond sticky */}
+      <div className="sticky top-0 h-screen overflow-hidden">
+        
+        {/* Images avec transitions */}
+        <motion.div style={{ scale: scaleImages }} className="relative h-full">
+          
+          {/* Image 1 */}
+          <motion.div
+            style={{ opacity: useTransform(scrollYProgress, [0, 0.25], [1, 0]) }}
+            className="absolute inset-0 flex items-center justify-start p-8"
+          >
+            <div className="w-1/2 h-5/6">
+              <img src="/images/about1.png" alt="About 1" className="w-full h-full object-cover rounded-2xl shadow-2xl" />
             </div>
-          </Card>
+          </motion.div>
+
+          {/* Image 2 */}
+          <motion.div
+            style={{ opacity: useTransform(scrollYProgress, [0.2, 0.45, 0.7], [0, 1, 0]) }}
+            className="absolute inset-0 flex items-center justify-end p-8"
+          >
+            <div className="w-1/2 h-5/6">
+              <img src="/images/about2.png" alt="About 2" className="w-full h-full object-cover rounded-2xl shadow-2xl" />
+            </div>
+          </motion.div>
+
+          {/* Image 3 */}
+          <motion.div
+            style={{ opacity: useTransform(scrollYProgress, [0.65, 0.85], [0, 1]) }}
+            className="absolute inset-0 flex items-center justify-start p-8"
+          >
+            <div className="w-1/2 h-5/6">
+              <img src="/images/about3.png" alt="About 3" className="w-full h-full object-cover rounded-2xl shadow-2xl" />
+            </div>
+          </motion.div>
         </motion.div>
+
+        {/* Textes : placés dans le sticky, donc ne débordent jamais hors de la section */}
+        <motion.div
+          style={{ opacity: textsOpacity }}
+          className="absolute inset-0 pointer-events-none z-50"
+        >
+          <div className="h-screen flex items-center justify-between px-20">
+            
+            {/* WHO WE ARE */}
+            <div>
+              <h2 className="text-6xl md:text-8xl lg:text-9xl font-bold leading-none">
+                <motion.span style={{ x: xWho, color: whoColor }} className="block">
+                  WHO
+                </motion.span>
+                <motion.span style={{ x: xWe, color: weColor }} className="block">
+                  WE
+                </motion.span>
+                <motion.span style={{ x: xAre, color: areColor }} className="block">
+                  ARE
+                </motion.span>
+              </h2>
+            </div>
+
+            {/* Petit texte About Us */}
+            <motion.div style={{ y: yText }} className="max-w-md pointer-events-auto">
+              <div className="bg-black/70 p-8 backdrop-blur-xl rounded-2xl border border-white/10">
+                <span className="text-xs uppercase tracking-wider text-white/80 mb-3 block">
+                  About Us
+                </span>
+                <p className="text-white text-sm leading-relaxed">
+                  Our creative team brings your brand to life through cinematic visuals, refined storytelling,
+                  and digital strategy.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );

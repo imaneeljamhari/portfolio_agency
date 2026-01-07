@@ -22,31 +22,32 @@ export default function Header() {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-[#F9F8F6]/80 backdrop-blur-md border-b border-black/10"
-          : "bg-transparent"
+        "backdrop-blur-lg",
+        isScrolled && "border-b border-black/10"
       )}
     >
       <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <a href="/" className="text-2xl font-bold tracking-tight text-black">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo - Gauche */}
+          <a href="/" className="text-2xl font-bold tracking-tight text-black flex-shrink-0">
             AC<span className="text-black/60">MEDIA</span>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
+          {/* Navigation Desktop - Centrée */}
+          <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <Navigation />
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-black"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Bouton Menu Mobile - Droite */}
+          <div className="flex-shrink-0">
+            <button
+              className="md:hidden p-2 text-black"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
